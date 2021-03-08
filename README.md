@@ -2,8 +2,10 @@
 Streaming Merkle Proof and Verify (single leaf)
 
 from Luke Champine's Paper: 
-    "Streaming Merkle Proofs within Binary Numeral Trees"
-    https://eprint.iacr.org/2021/038.pdf
+
+"Streaming Merkle Proofs within Binary Numeral Trees"
+	
+https://eprint.iacr.org/2021/038.pdf
 
 
 ## Usage
@@ -55,7 +57,7 @@ The data directory has several example block files. You can create your own, as 
 
 Note: The implementation of prove-leaf reads the blocks stream from file incrementally. It doesn't work with an in-memory collection as the stream. The intent was to mirror the incremental reads in the pseudocode from the original paper.
 
-#### Utils
+#### Utilities
 ```clojure
 ;; array equals
 (defn array-eq? [ba1 ba2] (java.util.Arrays/equals ba1 ba2))
@@ -66,7 +68,7 @@ Note: The implementation of prove-leaf reads the blocks stream from file increme
     (prove-leaf stream index)))
 ```
 
-Use prove-leaf (via get-proof which wraps the file open) to create a proof for the leaf at index 2 in the stream:
+Prove-leaf creates a proof for the leaf at index 2 in the stream. For convenience, use the get-proof utility function above, which just wraps the file open.
 
 ```clojure
 (def test-proof (get-proof "data/blks3.dat" 2))
