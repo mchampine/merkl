@@ -88,6 +88,8 @@ Check that the root returned from verify-leaf matches the known root:
 Check that supplying a different leaf to the verify produces a different root, and therefore the verification fails:
 
 ```clojure
-(def test-vl-bad (verify-leaf 2 "x" r3-proof))
+(def test-vl-bad (verify-leaf 2 "x" test-proof))
+
+(array-eq? test-root test-vl-bad)
 ;; false
 ```
