@@ -1,9 +1,5 @@
 # merkl
-Streaming Merkle Proof and Verify (single leaf)
-
-from Luke Champine's Paper: 
-
-"Streaming Merkle Proofs within Binary Numeral Trees"
+Clojure Implementatoin of Streaming Merkle Root, Proof, and Verify (single leaf) from Luke Champine's Paper: Streaming Merkle Proofs within Binary Numeral Trees
 	
 https://eprint.iacr.org/2021/038.pdf
 
