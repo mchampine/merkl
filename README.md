@@ -1,18 +1,24 @@
 # merkl
-Streaming Merkle Roots and Proofs in Clojure
+Streaming Merkle Proof and Verify (single leaf)
+
+from Luke Champine's Paper: 
+    "Streaming Merkle Proofs within Binary Numeral Trees"
+    https://eprint.iacr.org/2021/038.pdf
+
 
 ## Usage
+
+Require merkl.root for calculating roots. Also require merkl.proof to generate and verify streaming merkle proofs.
 
 ```clojure
 (ns merkl.yourmodule
   (:require [merkl.root :refer :all]
             [merkl.proof :refer :all]))
-
 ```
 
-Require merkl.root for calculating roots. Also require merkl.proof to generate and verify streaming merkle proofs.
-
 You can use an in-memory Clojure collection for your block stream, or load it from a file.
+
+## Calculate Roots
 
 ### In Memory
 
@@ -28,7 +34,7 @@ You can use an in-memory Clojure collection for your block stream, or load it fr
 
 ### From file
 
-For example, if you have a file of blocks (one per line), you can use line-seq to create a sequence for use with merkle-root:
+With a file of 'blocks' (sequence of characters, one block per line), you can use line-seq to create a sequence for use with merkle-root:
 
 ```clojure
 (defn file-stream-merkle-root [f]
@@ -41,7 +47,11 @@ For example, if you have a file of blocks (one per line), you can use line-seq t
 ;;     62, 114, 109]
 ```
 
-### Streaming Merkle Proofs
+The data directory has several example block files. You can create your own, as long as 'blocks' are separated into lines.
+
+## Streaming Merkle Proofs and Verifies
+
+### Proofs
 
 Note: The implementation of prove-leaf reads the blocks stream from file incrementally. It doesn't work with an in-memory collection as the stream. The intent was to mirror the incremental reads in the pseudocode from the original paper.
 
@@ -56,13 +66,15 @@ Note: The implementation of prove-leaf reads the blocks stream from file increme
     (prove-leaf stream index)))
 ```
 
-Use prove-leaf (via get-proof which just wraps the file open) to create a proof for the leaf at index 2 in the stream:
+Use prove-leaf (via get-proof which wraps the file open) to create a proof for the leaf at index 2 in the stream:
 
 ```clojure
 (def test-proof (get-proof "data/blks3.dat" 2))
 ```
 
-Use verify-leaf to generate a root from the supplied stream and leaf at index 2.
+### Verifies
+
+Use verify-leaf to generate a root from the proof and the leaf to be verified at index 2. The string "2" is the 'block' from the original stream. Verify-leaf uses the proof we created from the original stream, to prove that the supplied leaf was indeed part of that original stream (and not a forgery).
 
 ```clojure
 (def test-vl (verify-leaf 2 "2" test-proof))
@@ -81,4 +93,3 @@ Check that supplying a different leaf to the verify produces a different root, a
 (def test-vl-bad (verify-leaf 2 "x" r3-proof))
 ;; false
 ```
-
