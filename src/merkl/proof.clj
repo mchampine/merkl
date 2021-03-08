@@ -52,12 +52,18 @@
 (defn load-stack [stk blks]
   (reduce (fn [s {:keys [i subr]}] (root/insert s subr i)) stk blks))
 
-(defn verify-leaf
+(defn root-from-proof-and-leaf
   "Generate a verification hash of leaf (to verify) and the proof
    Proof consists of subroots before the index (pre) and after the index (post)"
-  [index leaf proof]
+  [leaf proof]
   (-> {}
       (load-stack (:pre proof))
       (root/insert (root/leaf-hash leaf) 0)
       (load-stack (:post proof))
       root/finalize))
+
+(defn verify-leaf
+  "Use a proof to verify that a given leaf exists in a stream of blocks"
+  [knownroot leaf proof]
+  (= (root/ba->hex knownroot)
+     (root/ba->hex (root-from-proof-and-leaf leaf proof))))

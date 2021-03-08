@@ -9,9 +9,11 @@
 
 ;; utils
 
+;; More compact display of byte arrays (hash function output)
+(defn ba->hex [s] (format "%X" (java.math.BigInteger. s)))
+
 ;; blake2b-256 for the hash function as in the Sia blockchain
 (defn leaf-hash [n] (hash/blake2b-256 (.getBytes n)))
-
 (defn parent-hash [l r] (hash/blake2b-256 (byte-array (concat l r))))
 
 (defn foldr [f coll]
@@ -45,10 +47,8 @@
 ;; arbitrary example block stream with 12 'blocks'
 (def blkstream (mapv str (range 12)))
 
-(merkle-root blkstream)
-;; => [-40, 80, 93, -106, 75, 106, -86, 0, -126, -54, -24, -54, 60, -81, 3,
-;;     64, 54, 45, -31, 62, -44, 60, 36, -13, -75, -110, -124, 74, 35, -87,
-;;     28, -40]
+(ba->hex (merkle-root blkstream))
+;; => "-27AFA269B49555FF7D351735C350FCBFC9D21EC12BC3DB0C4A6D7BB5DC56E328"
 
 ;;;;;;;;; ALTERNATIVE 'no delete' on INSERTs ;;;;;;;;;;
 
@@ -72,7 +72,5 @@
            (live-nodes (count stream))
            finalize)))
 
-(merkle-root-nodel blkstream)
-;; => [-40, 80, 93, -106, 75, 106, -86, 0, -126, -54, -24, -54, 60, -81, 3,
-;;     64, 54, 45, -31, 62, -44, 60, 36, -13, -75, -110, -124, 74, 35, -87,
-;;     28, -40]
+(ba->hex (merkle-root-nodel blkstream))
+;; => "-27AFA269B49555FF7D351735C350FCBFC9D21EC12BC3DB0C4A6D7BB5DC56E328"

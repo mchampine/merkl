@@ -25,9 +25,7 @@ You can use an in-memory Clojure collection for your block stream, or load it fr
 (def blkstream (mapv str (range 12)))
 
 (merkle-root blkstream)
-;; => [-40, 80, 93, -106, 75, 106, -86, 0, -126, -54, -24, -54, 60, -81, 3,
-;;     64, 54, 45, -31, 62, -44, 60, 36, -13, -75, -110, -124, 74, 35, -87,
-;;     28, -40]
+;; => "-27AFA269B49555FF7D351735C350FCBFC9D21EC12BC3DB0C4A6D7BB5DC56E328"
 ```
 
 ### From file
@@ -40,9 +38,7 @@ With a file of 'blocks' (sequence of characters, one block per line), you can us
     (merkle-root (line-seq rdr))))
 
 (def test-root (file-stream-merkle-root "data/blks3.dat"))
-;; => [21, 127, -117, 92, -94, -81, 34, -44, 26, -66, -54, 30, -92, -71,
-;;     38, 40, -121, 90, 103, -73, 16, 1, 25, -119, -13, 21, 11, 49, 65,
-;;     62, 114, 109]
+;; => "157F8B5CA2AF22D41ABECA1EA4B92628875A67B710011989F3150B31413E726D"
 ```
 
 The data directory has several example block files. You can create your own, as long as 'blocks' are separated into lines.
@@ -55,41 +51,38 @@ Note: The implementation of prove-leaf reads the blocks stream from file increme
 
 #### Utilities
 ```clojure
-;; array equals
-(defn array-eq? [ba1 ba2] (java.util.Arrays/equals ba1 ba2))
-
 ;; construct a proof for a given file and index
 (defn get-proof [file index]
   (with-open [stream (clojure.java.io/reader file)]
     (prove-leaf stream index)))
 ```
 
-Prove-leaf creates a proof for the leaf at index 2 in the stream. For convenience, use the get-proof utility function above, which just wraps the file open.
+Prove-leaf creates a proof for the leaf at index 2 in the stream. For convenience, use the get-proof utility function above, which just wraps the file open. A proof consists of subroots before the leaf, the leaf, and subroots after the leaf. For leaf index 2 of a 3 block stream, there is one height-1 subroot before the leaf and no subroots after it:
 
 ```clojure
-(def test-proof (get-proof "data/blks3.dat" 2))
+@(def test-proof (get-proof "data/blks3.dat" 2))
+;; => {:pre
+;;     ({:i 1,
+;;       :subr
+;;       [87, 7, 79, 109, 59, -98, 6, -83, 13, 23, 41, -15, 59, -21, 51,
+;;        -10, 12, -66, 103, 111, -70, 99, -72, 46, -47, 34, -108, 25, 3,
+;;        -100, 21, 1]}),
+;;     :leaf "2",
+;;     :post ()}
 ```
 
 ### Verifies
 
-Use verify-leaf to generate a root from the proof and the leaf to be verified (in this case, at index 2). The string "2" in this case is the 'block' that existed the original stream. Verify-leaf uses the proof we created from the original stream plus a supplied leaf, to prove that the supplied leaf was part of that original stream (and not a forgery). You can generate and verify proofs for any stream, index, and leaf block to be verified.
+Use verify-leaf to verify the presence of a leaf in a block stream. The string "2" in this case is the 'block' that existed the original stream. Verify-leaf uses the proof we created from the original stream plus a supplied leaf, to prove that the supplied leaf was part of that original stream (and not a forgery). You can generate proofs for any stream and index.
 
 ```clojure
-(def test-vl (verify-leaf 2 "2" test-proof))
-```
-
-Check that the root returned from verify-leaf matches the known root:
-
-```clojure
-(array-eq? test-root test-vl)
+(verify-leaf test-root "2" test-proof)
 ;; true
 ```
 
-Check that supplying a different leaf to the verify produces a different root, and therefore the verification fails:
+Check that supplying a different leaf to the verify fails:
 
 ```clojure
-(def test-vl-bad (verify-leaf 2 "x" test-proof))
-
-(array-eq? test-root test-vl-bad)
+(verify-leaf test-root "X" test-proof)
 ;; false
 ```
