@@ -25,7 +25,7 @@ You can use an in-memory Clojure collection for your block stream, or load it fr
 (def blkstream (mapv str (range 12)))
 
 (ba->hex (merkle-root blkstream))  ;; ba->hex provides compact display of hash
-;; => "-27AFA269B49555FF7D351735C350FCBFC9D21EC12BC3DB0C4A6D7BB5DC56E328"
+;; => "D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8"
 ```
 
 ### From file

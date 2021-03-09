@@ -10,7 +10,11 @@
 ;; utils
 
 ;; More compact display of byte arrays (hash function output)
-(defn ba->hex [s] (format "%X" (java.math.BigInteger. s)))
+(defn ba->hex [s] (apply str (map #(format "%02X" %) s)))
+
+;; uncomment and eval to default to ba->hex for byte arrays
+;; (defmethod print-method (Class/forName "[B") [v ^java.io.Writer w]
+;;   (.write w (ba->hex v)))
 
 ;; blake2b-256 for the hash function as in the Sia blockchain
 (defn leaf-hash [n] (hash/blake2b-256 (.getBytes n)))
@@ -48,7 +52,7 @@
 (def blkstream (mapv str (range 12)))
 
 (ba->hex (merkle-root blkstream))
-;; => "-27AFA269B49555FF7D351735C350FCBFC9D21EC12BC3DB0C4A6D7BB5DC56E328"
+;; => "D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8"
 
 ;;;;;;;;; ALTERNATIVE 'no delete' on INSERTs ;;;;;;;;;;
 
@@ -73,4 +77,4 @@
            finalize)))
 
 (ba->hex (merkle-root-nodel blkstream))
-;; => "-27AFA269B49555FF7D351735C350FCBFC9D21EC12BC3DB0C4A6D7BB5DC56E328"
+;; => "D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8"
