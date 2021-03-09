@@ -63,14 +63,10 @@ Prove-leaf creates a proof for the leaf at index 2 in the stream. For convenienc
 
 ```clojure
 @(def test-proof (get-proof "data/blks3.dat" 2))
-;; => {:pre
-;;     ({:i 1,
-;;       :subr
-;;       [87, 7, 79, 109, 59, -98, 6, -83, 13, 23, 41, -15, 59, -21, 51,
-;;        -10, 12, -66, 103, 111, -70, 99, -72, 46, -47, 34, -108, 25, 3,
-;;        -100, 21, 1]}),
-;;     :leaf "2",
-;;     :post ()}
+;; {:pre ({:i 1,
+;;         :subr 57074F6D3B9E06AD0D1729F13BEB33F60CBE676FBA63B82ED1229419039C1501}),
+;;  :leaf "2",
+;;  :post ()}
 ```
 
 ### Verifies

@@ -12,7 +12,7 @@
   (with-open [rdr (clojure.java.io/reader f)]
     (count (line-seq rdr))))
 
-;; utility: construct a proof for a given file and index
+;; construct a proof for a given file and index
 (defn get-proof [file index]
   (with-open [stream (clojure.java.io/reader file)]
     (prove-leaf stream index)))
@@ -45,15 +45,12 @@
 ;; proof and verify for r3
 
 ;; generate a proof for leaf at index 6
-(def r3-proof (get-proof "data/blks3.dat" 2))
-;; => {:pre
-;;     ({:i 1,
-;;       :subr
-;;       [87, 7, 79, 109, 59, -98, 6, -83, 13, 23, 41, -15, 59, -21, 51,
-;;        -10, 12, -66, 103, 111, -70, 99, -72, 46, -47, 34, -108, 25, 3,
-;;        -100, 21, 1]}),
-;;     :leaf "2",
-;;     :post ()}
+@(def r3-proof (get-proof "data/blks3.dat" 2))
+;; {:pre ({:i 1,
+;;         :subr 57074F6D3B9E06AD0D1729F13BEB33F60CBE676FBA63B82ED1229419039C1501}),
+;;  :leaf "2",
+;;  :post ()}
+
 
 (verify-leaf r3 "2" r3-proof)
 ;; => true
