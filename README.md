@@ -36,9 +36,11 @@ With a file of 'blocks' (sequence of characters, one block per line), you can us
 (defn file-stream-merkle-root [f]
   (with-open [rdr (clojure.java.io/reader f)]
     (merkle-root (line-seq rdr))))
-
+	
 (def test-root (file-stream-merkle-root "data/blks3.dat"))
 ;; 157F8B5CA2AF22D41ABECA1EA4B92628875A67B710011989F3150B31413E726D
+
+;; Note: byte arrays are printed as hex due to print-method override in merkl.root
 ```
 
 The data directory has several example block files. You can create your own, as long as 'blocks' are separated into lines.
