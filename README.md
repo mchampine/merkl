@@ -49,25 +49,21 @@ The data directory has several example block files. You can create your own, as 
 
 ### Proofs
 
-Note: The implementation of prove-leaf reads the blocks stream from file incrementally. It doesn't work with an in-memory collection as the stream. The intent was to mirror the incremental reads in the pseudocode from the original paper.
+Use **prove-leaf** to create a proof for the leaf at the given index in the stream. For convenience, you can use the **get-proof** utility function (see below), which wraps the file open. A proof consists of subroots before the leaf, the leaf itself, and subroots after the leaf. For leaf index 2 of a 3 block stream, there is one height-1 subroot before the leaf and no subroots after it:
 
-#### Utilities
 ```clojure
 ;; construct a proof for a given file and index
 (defn get-proof [file index]
   (with-open [stream (clojure.java.io/reader file)]
     (prove-leaf stream index)))
-```
 
-**Prove-leaf** creates a proof for the leaf at the given index in the stream. For convenience, use the **get-proof** utility function above, which wraps the file open. A proof consists of subroots before the leaf, the leaf itself, and subroots after the leaf. For leaf index 2 of a 3 block stream, there is one height-1 subroot before the leaf and no subroots after it:
-
-```clojure
 @(def test-proof (get-proof "data/blks3.dat" 2))
 ;; {:pre ({:i 1,
 ;;         :subr 57074F6D3B9E06AD0D1729F13BEB33F60CBE676FBA63B82ED1229419039C1501}),
 ;;  :leaf "2",
 ;;  :post ()}
 ```
+_**Note**_: The implementation of prove-leaf reads the blocks stream from file incrementally. It doesn't work with an in-memory collection as the stream. The intent was to mirror the incremental reads in the pseudocode from the original paper.
 
 ### Verifies
 
