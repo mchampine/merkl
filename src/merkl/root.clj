@@ -13,8 +13,8 @@
 (defn ba->hex [s] (apply str (map #(format "%02X" %) s)))
 
 ;; uncomment and eval to default to ba->hex for byte arrays
-;; (defmethod print-method (Class/forName "[B") [v ^java.io.Writer w]
-;;   (.write w (ba->hex v)))
+(defmethod print-method (Class/forName "[B") [v ^java.io.Writer w]
+  (.write w (ba->hex v)))
 
 ;; blake2b-256 for the hash function as in the Sia blockchain
 (defn leaf-hash [n] (hash/blake2b-256 (.getBytes n)))
@@ -51,8 +51,8 @@
 ;; arbitrary example block stream with 12 'blocks'
 (def blkstream (mapv str (range 12)))
 
-(ba->hex (merkle-root blkstream))
-;; => "D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8"
+(merkle-root blkstream)
+;; D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8
 
 ;;;;;;;;; ALTERNATIVE 'no delete' on INSERTs ;;;;;;;;;;
 
@@ -77,4 +77,4 @@
            finalize)))
 
 (ba->hex (merkle-root-nodel blkstream))
-;; => "D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8"
+;; "D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8"

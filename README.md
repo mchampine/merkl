@@ -24,8 +24,8 @@ You can use an in-memory Clojure collection for your block stream, or load it fr
 ;; arbitrary example block stream with 12 'blocks'
 (def blkstream (mapv str (range 12)))
 
-(ba->hex (merkle-root blkstream))  ;; ba->hex provides compact display of hash
-;; => "D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8"
+(merkle-root blkstream)
+;; D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8
 ```
 
 ### From file
@@ -38,8 +38,7 @@ With a file of 'blocks' (sequence of characters, one block per line), you can us
     (merkle-root (line-seq rdr))))
 
 (def test-root (file-stream-merkle-root "data/blks3.dat"))
-(ba->hex test-root)
-;; => "157F8B5CA2AF22D41ABECA1EA4B92628875A67B710011989F3150B31413E726D"
+;; 157F8B5CA2AF22D41ABECA1EA4B92628875A67B710011989F3150B31413E726D
 ```
 
 The data directory has several example block files. You can create your own, as long as 'blocks' are separated into lines.
