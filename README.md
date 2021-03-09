@@ -74,7 +74,7 @@ Prove-leaf creates a proof for the leaf at index 2 in the stream. For convenienc
 
 ### Verifies
 
-Use verify-leaf to verify the presence of a leaf in a block stream. The string "2" in this case is the 'block' that existed the original stream. Verify-leaf uses the proof we created from the original stream plus a supplied leaf, to prove that the supplied leaf was part of that original stream (and not a forgery). You can generate proofs for any stream and index.
+Use verify-leaf to verify the presence of a leaf in a block stream. The string "2" in this case is the 'block' that existed the original stream. Verify-leaf uses the known root, the proof we created from the original stream, and a supplied leaf to verify that the supplied leaf was present in that original block stream (and is not a forgery).
 
 ```clojure
 (verify-leaf test-root "2" test-proof)
