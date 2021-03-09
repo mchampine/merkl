@@ -48,11 +48,11 @@
     (->> (reduce (fn [s v] (insert s (leaf-hash v))) {} stream)
          finalize)))
 
-;; arbitrary example block stream with 12 'blocks'
-(def blkstream (mapv str (range 12)))
+;;;; arbitrary example block stream with 12 'blocks'
+;; (def blkstream (mapv str (range 12)))
 
-(merkle-root blkstream)
-;; D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8
+;; (merkle-root blkstream)
+;;;; D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8
 
 ;;;;;;;;; ALTERNATIVE 'no delete' on INSERTs ;;;;;;;;;;
 
@@ -65,8 +65,8 @@
      (assoc s n v))))
 
 ;; determine which nodes are 'live' from stream size
-(defn live? [stream-size idx] (bit-test stream-size idx))
-(defn live-nodes [ssize strm] (filter #(live? ssize (key %)) strm))
+(defn- live? [stream-size idx] (bit-test stream-size idx))
+(defn- live-nodes [ssize strm] (filter #(live? ssize (key %)) strm))
 
 (defn merkle-root-nodel
   "Calculate the Merkle root of nodes in stream"
@@ -76,5 +76,5 @@
            (live-nodes (count stream))
            finalize)))
 
-(ba->hex (merkle-root-nodel blkstream))
-;; "D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8"
+;;(merkle-root-nodel blkstream)
+;;;; "D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8"

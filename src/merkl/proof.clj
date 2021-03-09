@@ -49,7 +49,7 @@
 
 ;;;; Verify Proof (single leaf)
 
-(defn load-stack [stk blks]
+(defn- load-stack [stk blks]
   (reduce (fn [s {:keys [i subr]}] (root/insert s subr i)) stk blks))
 
 (defn root-from-proof-and-leaf

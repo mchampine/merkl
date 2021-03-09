@@ -14,9 +14,9 @@ Require merkl.root for calculating roots. Also require merkl.proof to generate a
             [merkl.proof :refer :all]))
 ```
 
-You can use an in-memory Clojure collection for your block stream, or load it from a file.
-
 ## Calculate Roots
+
+You can use an in-memory Clojure collection for your block stream, or load it from a file.
 
 ### In Memory
 
@@ -26,6 +26,8 @@ You can use an in-memory Clojure collection for your block stream, or load it fr
 
 (merkle-root blkstream)
 ;; D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8
+
+;; Note: byte arrays are displayed as hex via print-method override in merkl.root
 ```
 
 ### From file
@@ -39,8 +41,6 @@ With a file of 'blocks' (sequence of characters, one block per line), you can us
 	
 (def test-root (file-stream-merkle-root "data/blks3.dat"))
 ;; 157F8B5CA2AF22D41ABECA1EA4B92628875A67B710011989F3150B31413E726D
-
-;; Note: byte arrays are printed as hex due to print-method override in merkl.root
 ```
 
 The data directory has several example block files. You can create your own, as long as 'blocks' are separated into lines.
@@ -59,7 +59,7 @@ Note: The implementation of prove-leaf reads the blocks stream from file increme
     (prove-leaf stream index)))
 ```
 
-Prove-leaf creates a proof for the leaf at index 2 in the stream. For convenience, use the get-proof utility function above, which just wraps the file open. A proof consists of subroots before the leaf, the leaf, and subroots after the leaf. For leaf index 2 of a 3 block stream, there is one height-1 subroot before the leaf and no subroots after it:
+**Prove-leaf** creates a proof for the leaf at the given index in the stream. For convenience, use the **get-proof** utility function above, which wraps the file open. A proof consists of subroots before the leaf, the leaf itself, and subroots after the leaf. For leaf index 2 of a 3 block stream, there is one height-1 subroot before the leaf and no subroots after it:
 
 ```clojure
 @(def test-proof (get-proof "data/blks3.dat" 2))
@@ -71,7 +71,7 @@ Prove-leaf creates a proof for the leaf at index 2 in the stream. For convenienc
 
 ### Verifies
 
-Use verify-leaf to verify the presence of a leaf in a block stream. The string "2" in this case is the 'block' that existed the original stream. Verify-leaf uses the known root, the proof we created from the original stream, and a supplied leaf to verify that the supplied leaf was present in that original block stream (and is not a forgery).
+Use **verify-leaf** to verify the presence of a leaf in a block stream. The string "2" in this case is the 'block' that existed the original stream. Verify-leaf uses the known root, the proof we created from the original stream, and a supplied leaf to verify that the supplied leaf was present in that original block stream (and is not a forgery).
 
 ```clojure
 (verify-leaf test-root "2" test-proof)
