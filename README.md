@@ -1,15 +1,12 @@
 # merkl
-Clojure Implementation of Streaming Merkle Root, Proof, and Verify (single leaf) from Luke Champine's Paper: "Streaming Merkle Proofs within Binary Numeral Trees"
-	
-https://eprint.iacr.org/2021/038.pdf
-
+Clojure Implementation of Streaming Merkle Root, Proof, and Verify (single leaf) from Luke Champine's paper: **Streaming Merkle Proofs within Binary Numeral Trees** @ https://eprint.iacr.org/2021/038.pdf
 
 ## Usage
 
-Require merkl.root for calculating roots. Also require merkl.proof to generate and verify streaming merkle proofs.
+Require merkl.root for calculating roots. Require merkl.proof to generate and verify streaming merkle proofs.
 
 ```clojure
-(ns merkl.yourmodule
+(ns your.ns
   (:require [merkl.root :refer :all]
             [merkl.proof :refer :all]))
 ```
