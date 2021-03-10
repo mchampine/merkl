@@ -7,7 +7,7 @@
 ;;    "Streaming Merkle Proofs within Binary Numeral Trees"
 ;;    https://eprint.iacr.org/2021/038.pdf
 
-;; utils
+;;;; Utility functions
 
 ;; stateful read - not the clojure way generally, but meant
 ;; to show the streaming nature of this proof / verify
