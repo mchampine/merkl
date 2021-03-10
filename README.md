@@ -23,9 +23,8 @@ You can use an in-memory Clojure collection for your block stream, or load it fr
 
 (merkle-root blkstream)
 ;; D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8
-
-;; Note: byte arrays are displayed as hex via print-method override in merkl.root
 ```
+_**Note**_: The Merkle Root hash is Blake2b-256, stored as a length 32 byte array. Byte Arrays are compactly printed in hex via print-method override in merkl.root
 
 ### From file
 
