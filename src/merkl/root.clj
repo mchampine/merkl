@@ -12,7 +12,7 @@
 ;; More compact display of byte arrays (hash function output)
 (defn ba->hex [s] (apply str (map #(format "%02X" %) s)))
 
-;; eval to default to ba->hex for printing byte arrays
+;; default to ba->hex for printing byte arrays
 (defmethod print-method (Class/forName "[B") [v ^java.io.Writer w]
   (.write w (ba->hex v)))
 
