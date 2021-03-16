@@ -1,6 +1,5 @@
 (ns merkl.proof
-  (:require [buddy.core.hash :as hash]
-            [merkl.root :as root]))
+  (:require [merkl.root :as root]))
 
 ;; Streaming Merkle Proof and Verify (single leaf)
 ;; from Luke Champine's Paper: 
