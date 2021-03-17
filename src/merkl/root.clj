@@ -1,6 +1,5 @@
 (ns merkl.root
-  (:require [buddy.core.hash :as hash]
-            [merkl.proof :as proof]))
+  (:require [buddy.core.hash :as hash]))
 
 ;; Streaming Merkle Root
 
@@ -67,7 +66,7 @@
      [(assoc stk n v) i])))
 
 ;; get only live nodes
-(defn- live-nodes [[stk i]] (select-keys stk (proof/ones (inc i))))
+(defn- live-nodes [[stk i]] (select-keys stk (merkl.proof/ones (inc i))))
 
 (defn merkle-root-nodel
   "Calculate the Merkle root of nodes in stream"
