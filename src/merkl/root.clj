@@ -1,5 +1,6 @@
 (ns merkl.root
-  (:require [buddy.core.hash :as hash]))
+  (:require [buddy.core.hash :as hash]
+            [merkl.proof :as proof]))
 
 ;; Streaming Merkle Root
 
@@ -49,32 +50,36 @@
          finalize)))
 
 ;;;; arbitrary example block stream with 12 'blocks'
-;; (def blkstream (mapv str (range 12)))
+(def blkstream (mapv str (range 12)))
 
 ;; (merkle-root blkstream)
 ;;;; D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8
+
 
 ;;;;;;;;; ALTERNATIVE 'no delete' on INSERTs ;;;;;;;;;;
 
 ;; no-delete inserts
 (defn insert-nodel
-  ([s v] (insert s v 0))
-  ([s v n]
-   (if (get s n)
-     (insert-nodel s (parent-hash (get s n) v) (inc n))
-     (assoc s n v))))
+  ([[stk i] v] (insert-nodel [stk (inc i)] v 0))
+  ([[stk i] v n]
+   (if (bit-test i n)
+     (insert-nodel [stk i] (parent-hash (get stk n) v) (inc n))
+     [(assoc stk n v) i])))
 
-;; determine which nodes are 'live' from stream size
-(defn- live? [stream-size idx] (bit-test stream-size idx))
-(defn- live-nodes [ssize strm] (filter #(live? ssize (key %)) strm))
+;; get only live nodes
+(defn- live-nodes [[stk i]] (select-keys stk (proof/ones (inc i))))
 
 (defn merkle-root-nodel
   "Calculate the Merkle root of nodes in stream"
   [stream]
   (if (nil? (first stream)) nil
-      (->> (reduce (fn [s v] (insert-nodel s (leaf-hash v))) {} stream)
-           (live-nodes (count stream))
-           finalize)))
+      (-> (reduce (fn [s v] (insert-nodel s (leaf-hash v))) [[] -1] stream)
+          live-nodes
+          finalize)))
 
-;;(merkle-root-nodel blkstream)
-;;;; "D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8"
+(merkle-root-nodel blkstream)
+;; => D8505D964B6AAA0082CAE8CA3CAF0340362DE13ED43C24F3B592844A23A91CD8
+;;
+;; => [-40, 80, 93, -106, 75, 106, -86, 0, -126, -54, -24, -54, 60, -81, 3,
+;;     64, 54, 45, -31, 62, -44, 60, 36, -13, -75, -110, -124, 74, 35, -87,
+;;     28, -40]
