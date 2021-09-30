@@ -66,7 +66,18 @@
      [(assoc stk n v) i])))
 
 ;; get only live nodes
-(defn- live-nodes [[stk i]] (select-keys stk (merkl.proof/ones (inc i))))
+
+;; v1
+;; (defn log2 [n] (int (Math/ceil (/ (Math/log n) (Math/log 2)))))
+;; (defn ones' [i] (filter (partial bit-test i) (range (log2 i))))
+;; (defn- live-nodes [[stk i]] (select-keys stk (ones' (inc i))))
+
+;; v2 curr
+;; (defn- live-nodes [[stk i]] (select-keys stk (merkl.proof/ones (inc i))))
+
+;; v3
+(defn- live-nodes [[stk i]]
+  (apply merge (keep-indexed #(when (bit-test (inc i) %1) {%1 %2}) stk)))
 
 (defn merkle-root-nodel
   "Calculate the Merkle root of nodes in stream"

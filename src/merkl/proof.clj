@@ -23,16 +23,19 @@
 (defn read-leaf [stream] (limit stream 1))
 
 (defn ones
-  "Return the bit positions of 1's in i from least to most significant
-  Example: 10 = 2r1010 => (1 3)  (ones at index 1 and 3)"
+  "Return the bit positions of 1's in i from most to least significant
+  Example: 10 = 2r1010 => (3 1)  (ones at indexes 3 and 1)"
   [i]
   (->> (range (count (Integer/toString i 2)))
-       (filter (partial bit-test i))))
+       (filter (partial bit-test i))
+       reverse))
 
-;; Warning: magic number 32 only supports stream sizes up to ~4B.
+;; zeros must return zero bits up to log2(stream-size).
+;; Since stream size may be unknown when streaming
+;; choose max supported stream size. In this case 2^32 = ~4B
 (defn zeros
-  "Return the bit positions of 1's in i from least to most significant
-  Example: 10 = 2r1010 => (0 2)  (zeros at index 0 and 2)"
+  "Return the bit positions of 0's in i from least to most significant
+  Example: 10 = 2r0..01010 => (0 2 4 5 6...) (zeros at index 0, 2, 4..31)"
   [i]
   (remove (partial bit-test i) (range 32)))
 
@@ -41,7 +44,7 @@
 (defn prove-leaf
   "Streaming single-leaf merkle proof for leaf at index for nodes in file"
   [stream index]
-  (let [pre (doall (for [k (reverse (ones index))] {:i k :subr (subroot stream k)}))
+  (let [pre (doall (for [k (ones index)] {:i k :subr (subroot stream k)}))
         l (first (read-leaf stream))
         post (doall (for [k (zeros index)] {:i k :subr (subroot stream k)}))]
     {:pre pre :leaf l :post (remove #(nil? (:subr %)) post)}))
